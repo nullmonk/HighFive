@@ -1,11 +1,16 @@
 # Set VM Name, Switch Name, and Installation Media Path.
 Param(
-   [string]$VMName,
-   [file]$ISO,
+   [string]$VMName = "",
+   [string]$ISO = "",
    [string]$NetworkName = "InternalSwitch"
 )
-
+$ErrorActionPreference = "Stop"
 $gen = 2
+
+if (($ISO -eq "") -or !(Test-Path $ISO) -or ($VMName -eq "")) {
+    Write-Host "Invalid Parameters"
+    exit
+}
 
 $VMPath = "C:\Users\Public\Documents\Hyper-V\$VMName\"
 $VHDPath = $VMPath + "$VMName.vhdx"
