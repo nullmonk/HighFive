@@ -5,7 +5,7 @@ Param(
    [string]$NetworkName = "InternalSwitch"
 )
 $ErrorActionPreference = "Stop"
-$gen = 2
+$gen = 1
 
 if (($ISO -eq "") -or !(Test-Path $ISO) -or ($VMName -eq "")) {
     Write-Host "Invalid Parameters"
@@ -26,10 +26,12 @@ Set-VM -Name $VMName -DynamicMemory -MemoryMaximumBytes 3GB
 
 # Add DVD Drive to Virtual Machine
 Add-VMScsiController -VMName $VMName
-Add-VMDvdDrive -VMName $VMName -ControllerNumber 1 -ControllerLocation 0 -Path $ISO
+Add-VMDvdDrive -VMName $VMName -Path $ISO -ControllerNumber 0 -ControllerLocation 1
 
 # Mount Installation Media
 $DVDDrive = Get-VMDvdDrive -VMName $VMName
 
 # Configure Virtual Machine to Boot from DVD
-Set-VMFirmware -VMName $VMName -FirstBootDevice $DVDDrive
+if ($gen -gt 1) {
+    Set-VMFirmware -VMName $VMName -FirstBootDevice $DVDDrive
+}
